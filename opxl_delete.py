@@ -1,5 +1,7 @@
 import openpyxl
 
+import openpyxl
+
 def opxl_delete(file_path, sheet_name, condition=None, row=None):
     # Load workbook
     try:
@@ -13,8 +15,6 @@ def opxl_delete(file_path, sheet_name, condition=None, row=None):
     ws = wb[sheet_name]
 
     # Validate inputs
-    if row is None and condition is None:
-        raise ValueError("Either 'row' or 'condition' must be provided.")
     if row is not None and condition is not None:
         raise ValueError("Provide only one of 'row' or 'condition'.")
 
@@ -61,6 +61,17 @@ def opxl_delete(file_path, sheet_name, condition=None, row=None):
                 ws.delete_rows(r)
             wb.save(file_path)
             print(f"Deleted {len(rows_to_delete)} row(s) matching the condition.")
+        return
+
+    # If neither row nor condition provided, delete all rows except header
+    if row is None and condition is None:
+        if ws.max_row > 1:
+            ws.delete_rows(2, ws.max_row - 1)
+            wb.save(file_path)
+            print(f"Deleted all rows except the header.")
+        else:
+            print("No data rows to delete.")
+            
 
 # Sample Usage
 
@@ -77,3 +88,6 @@ opxl_delete(db, sheet, condition={"First Name": "Karen"})
 
 # Delete all rows where Age >= 35
 opxl_delete(db, sheet, condition={"Age": lambda x: x is not None and x >= 35})
+
+# Simply delete all rows (Except the headers ofcourse)
+opxl_delete(db, sheet)
