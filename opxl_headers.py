@@ -11,6 +11,12 @@ def opxl_write_headers(file_path, sheet_name, headers):
     except KeyError:
         return f"Error: The sheet '{sheet_name}' does not exist in the workbook."
 
+    # Clear existing headers (row 1 only)
+    max_column = ws.max_column
+    for col in range(1, max_column + 1):
+        ws.cell(row=1, column=col).value = None
+
+    # Write new headers
     for col_index, header in enumerate(headers, start=1):
         ws.cell(row=1, column=col_index, value=header)
 
