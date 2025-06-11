@@ -2,6 +2,15 @@ import os
 import openpyxl
 
 def ensure_excel_exist(file_path):
+    # Extract the folder path
+    directory = os.path.dirname(file_path)
+
+    # Create folders if they do not exist
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"Directory created: {directory}")
+
+    # Create the Excel file if it doesn't exist
     if not os.path.exists(file_path):
         workbook = openpyxl.Workbook()
         workbook.save(file_path)
